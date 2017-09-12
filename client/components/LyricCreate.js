@@ -1,4 +1,7 @@
 import React, { Component } from 'react'
+import { graphql } from 'react-apollo'
+
+import ADDLYRIC_MUTATION from '../mutations/addLyricToSong'
 
 class LyricCreate extends Component {
     constructor(props) {
@@ -8,8 +11,21 @@ class LyricCreate extends Component {
     }
 
     onSubmit(event) {
-        console.log('test')
         event.preventDefault()
+
+        this.props.mutate({
+                variables: {
+                    // You cant use this.props.params.id because this is a child component
+                    // This is passed from the parent as a prop (ie: <LyricCreate songId={this.props.params.id} /> )
+                    songId: this.props.songId,
+                    content: this.state.content
+                }
+            })
+            .then(() => this.setState({ content: '' })) //Upon success, clear form input
+            .catch((err) => console.log(err))
+
+        // Clear input state here to have text removed instantly upon submit
+        // this.setState({ content: '' })
     }
     render() {
         // Tips
@@ -21,7 +37,7 @@ class LyricCreate extends Component {
             <form onSubmit={this.onSubmit.bind(this)}>
                 <label>Add a Lyric</label>
                 <input 
-                    value={this.state.value}
+                    value={this.state.content}
                     onChange={(event) => this.setState({ content: event.target.value })}
                 />
             </form>
@@ -29,4 +45,4 @@ class LyricCreate extends Component {
     }
 }
 
-export default LyricCreate
+export default graphql(ADDLYRIC_MUTATION)(LyricCreate)

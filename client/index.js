@@ -10,7 +10,11 @@ import SongList from './components/SongList'
 import SongCreate from './components/SongCreate'
 import SongDetail from './components/SongDetail'
 
-const client  = new ApolloClient({})
+const client  = new ApolloClient({
+    // This runs this code by everything that passes through Apollo
+    // We might use o.serialNumber (it must be unique, and must ask for it EVERY query)
+    dataIdFromObject: (o) => o.id
+})
 
 // Routes are usually defined inside ApolloProvider
 const Root = () => {
